@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Kyutai TTS Stream Demo</title>
+    <style>
+      body {
+        font-family: system-ui, Arial, sans-serif;
+        margin: 2rem;
+      }
+      label {
+        display: block;
+        margin-top: 0.5rem;
+      }
+      input,
+      textarea {
+        width: 100%;
+        padding: 0.5rem;
+        margin-top: 0.25rem;
+      }
+      button {
+        margin-top: 1rem;
+        padding: 0.5rem 1rem;
+      }
+      .log {
+        margin-top: 1rem;
+        white-space: pre-wrap;
+        background: #f6f6f6;
+        padding: 0.5rem;
+        border-radius: 4px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Kyutai Unmute TTS Streaming Demo</h1>
+    <label
+      >Bridge WebSocket URL
+      <input id="wsUrl" value="ws://localhost:8070/v1/audio/speech/stream" />
+    </label>
+    <label
+      >Voice (optional)
+      <input id="voice" placeholder="e.g., ears/p003/freeform_speech_01.wav" />
+    </label>
+    <label
+      >Text
+      <textarea id="text" rows="4">Hello from Kyutai Unmute TTS streaming bridge!</textarea>
+    </label>
+    <label>
+      Hold open (live deltas)
+      <input id="holdOpen" type="checkbox" />
+    </label>
+    <button id="start">Stream & Play</button>
+    <button id="stop">Stop</button>
+    <div class="log" id="log"></div>
+
+    <script>
+      const log = (m) => (document.getElementById('log').textContent += `\n${m}`)
+
+      const startBtn = document.getElementById('start')
+      const stopBtn = document.getElementById('stop')
+      let ws = null
+      let audioCtx = null
+
+      const closeStream = () => {
+        try { ws?.send(JSON.stringify({ type: 'eos' })) } catch {}
+        try { ws?.close() } catch {}
+        try { audioCtx?.close() } catch {}
+        ws = null
+        audioCtx = null
+      }
+
+      stopBtn.onclick = () => closeStream()
+
+      startBtn.onclick = async () => {
+        const url = document.getElementById('wsUrl').value.trim()
+        const text = document.getElementById('text').value.trim()
+        const voice = document.getElementById('voice').value.trim()
+        const holdOpen = document.getElementById('holdOpen').checked
+
+        if (!text) {
+          log('Missing text')
+          return
+        }
+
+  ws = new WebSocket(url)
+        ws.binaryType = 'arraybuffer'
+
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 24000, latencyHint: 'interactive' })
+        const sampleRate = 24000
+
+        if (audioCtx.state === 'suspended') {
+          try {
+            await audioCtx.resume()
+            log('AudioContext resumed')
+          } catch (e) {
+            log('Failed to resume AudioContext: ' + e.message)
+          }
+        }
+
+        let nextStartTime = audioCtx.currentTime
+        const queueChunk = (float32) => {
+          try {
+            const audioBuffer = audioCtx.createBuffer(1, float32.length, sampleRate)
+            audioBuffer.copyToChannel(float32, 0)
+
+            const src = audioCtx.createBufferSource()
+            src.buffer = audioBuffer
+            src.connect(audioCtx.destination)
+
+            // Schedule sequentially to avoid overlaps
+            const startAt = Math.max(audioCtx.currentTime, nextStartTime)
+            src.start(startAt)
+            nextStartTime = startAt + audioBuffer.duration
+          } catch (e) {
+            log('Playback error: ' + e.message)
+          }
+        }
+
+        ws.onopen = () => {
+          log('WS open')
+          ws.send(JSON.stringify({ input: text, ...(voice && { voice }), hold_open: holdOpen }))
+        }
+
+        ws.onmessage = async (evt) => {
+          if (typeof evt.data === 'string') {
+            try {
+              const msg = JSON.parse(evt.data)
+              if (msg.type === 'ready') {
+                log(`Stream ready: ${msg.encoding} @ ${msg.sample_rate}`)
+              } else if (msg.type === 'eos') {
+                log('EOS')
+                ws.close()
+              } else if (msg.type === 'error') {
+                log('Error: ' + msg.detail)
+                ws.close()
+              }
+            } catch {
+              // ignore stray strings
+            }
+            return
+          }
+
+          // Binary PCM S16LE mono @ 24kHz
+          let ab
+          if (evt.data instanceof ArrayBuffer) {
+            ab = evt.data
+          } else if (evt.data instanceof Blob) {
+            ab = await evt.data.arrayBuffer()
+          } else {
+            log('Unexpected binary type: ' + Object.prototype.toString.call(evt.data))
+            return
+          }
+          const buf = new Int16Array(ab)
+          const float32 = new Float32Array(buf.length)
+          for (let i = 0; i < buf.length; i++) {
+            float32[i] = Math.max(-1, Math.min(1, buf[i] / 32767))
+          }
+
+          queueChunk(float32)
+        }
+
+  ws.onclose = () => log('WS closed')
+        ws.onerror = (e) => log('WS error: ' + e.message)
+      }
+    </script>
+  </body>
+</html>

@@ -102,7 +102,8 @@ async def run_bot(transport: BaseTransport, runner_args: RunnerArguments):
     llm = OLLamaLLMService(
         # model="qwen/qwen3-4b-2507",  # Must be pulled first: ollama pull llama3.1
         # base_url="http://127.0.0.1:1234/v1",  # Default Ollama endpoint
-        model="qwen2.5:7b",  # Must be pulled first: ollama pull llama3.1
+        model="gemma3",  # Must be pulled first: ollama pull llama3.1
+        # model="qwen2.5:7b",  # Must be pulled first: ollama pull llama3.1
         base_url="http://localhost:11434/v1",  # Default Ollama endpoint
         params=OLLamaLLMService.InputParams(temperature=0.7, max_tokens=1000),
     )
@@ -110,7 +111,8 @@ async def run_bot(transport: BaseTransport, runner_args: RunnerArguments):
     messages = [
         {
             "role": "system",
-            "content": "You are a friendly AI assistant. Respond naturally and keep your answers conversational. NEVER ADD emojis!!! NEVER USE emojis!!! NEVER ADD smiley faces!!! NEVER USE smiley faces!!!",
+            # "content": "You are a friendly AI assistant. Respond naturally and keep your answers conversational. NEVER ADD emojis!!! NEVER USE emojis!!! NEVER ADD smiley faces!!! NEVER USE smiley faces!!!",
+            "content": "You are a friendly AI assistant. Respond naturally and keep your answers conversational. Avoid outputting special characters and emojis.",
         },
     ]
 

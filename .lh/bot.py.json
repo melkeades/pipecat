@@ -3,7 +3,7 @@
     "activeCommit": 0,
     "commits": [
         {
-            "activePatchIndex": 3,
+            "activePatchIndex": 11,
             "patches": [
                 {
                     "date": 1755621761763,
@@ -20,6 +20,38 @@
                 {
                     "date": 1755623471399,
                     "content": "Index: \n===================================================================\n--- \n+++ \n@@ -88,9 +88,9 @@\n     #     api_key=os.getenv(\"CARTESIA_API_KEY\"),\r\n     #     voice_id=\"71a7ad14-091c-4e8e-a314-022ece01c121\",  # British Reading Lady\r\n     # )\r\n     tts = KokoroTTSService(\r\n-        model_path=\"tts-models/kokoro-v1.0.int8.onnx\",\r\n+        model_path=\"tts-models/kokoro-v1.0.onnx\",\r\n         voices_path=\"tts-models/voices-v1.0.bin\",\r\n     )\r\n \r\n     # llm = OpenAILLMService(api_key=os.getenv(\"OPENAI_API_KEY\"))\r\n"
+                },
+                {
+                    "date": 1755698671598,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -109,9 +109,10 @@\n \r\n     messages = [\r\n         {\r\n             \"role\": \"system\",\r\n-            \"content\": \"You are a friendly AI assistant. Respond naturally and keep your answers conversational. NEVER ADD emojis!!! NEVER USE emojis!!! NEVER ADD smiley faces!!! NEVER USE smiley faces!!!\",\r\n+            # \"content\": \"You are a friendly AI assistant. Respond naturally and keep your answers conversational. NEVER ADD emojis!!! NEVER USE emojis!!! NEVER ADD smiley faces!!! NEVER USE smiley faces!!!\",\r\n+            \"content\": \"You are a friendly AI assistant. Respond naturally and keep your answers conversational. Avoid outputting special characters and emojis.\",\r\n         },\r\n     ]\r\n \r\n     context = OpenAILLMContext(messages)\r\n"
+                },
+                {
+                    "date": 1755698683895,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -101,9 +101,10 @@\n     # )\r\n     llm = OLLamaLLMService(\r\n         # model=\"qwen/qwen3-4b-2507\",  # Must be pulled first: ollama pull llama3.1\r\n         # base_url=\"http://127.0.0.1:1234/v1\",  # Default Ollama endpoint\r\n-        model=\"qwen2.5:7b\",  # Must be pulled first: ollama pull llama3.1\r\n+        model=\"qwen3:4b\",  # Must be pulled first: ollama pull llama3.1\r\n+        # model=\"qwen2.5:7b\",  # Must be pulled first: ollama pull llama3.1\r\n         base_url=\"http://localhost:11434/v1\",  # Default Ollama endpoint\r\n         params=OLLamaLLMService.InputParams(temperature=0.7, max_tokens=1000),\r\n     )\r\n \r\n"
+                },
+                {
+                    "date": 1755698748328,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -111,9 +111,9 @@\n     messages = [\r\n         {\r\n             \"role\": \"system\",\r\n             # \"content\": \"You are a friendly AI assistant. Respond naturally and keep your answers conversational. NEVER ADD emojis!!! NEVER USE emojis!!! NEVER ADD smiley faces!!! NEVER USE smiley faces!!!\",\r\n-            \"content\": \"You are a friendly AI assistant. Respond naturally and keep your answers conversational. Avoid outputting special characters and emojis.\",\r\n+            \"content\": \"/no_think You are a friendly AI assistant. Respond naturally and keep your answers conversational. Avoid outputting special characters and emojis.\",\r\n         },\r\n     ]\r\n \r\n     context = OpenAILLMContext(messages)\r\n"
+                },
+                {
+                    "date": 1755698824896,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,5 +1,4 @@\n-\r\n #\r\n # Copyright (c) 2024–2025, Daily\r\n #\r\n # SPDX-License-Identifier: BSD 2-Clause License\r\n@@ -191,5 +190,5 @@\n \r\n if __name__ == \"__main__\":\r\n     from pipecat.runner.run import main\r\n \r\n-    main()\n\\ No newline at end of file\n+    main()\r\n"
+                },
+                {
+                    "date": 1755699324130,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -115,11 +115,22 @@\n             \"content\": \"/no_think You are a friendly AI assistant. Respond naturally and keep your answers conversational. Avoid outputting special characters and emojis.\",\r\n         },\r\n     ]\r\n \r\n-    context = OpenAILLMContext(messages)\r\n-    context_aggregator = llm.create_context_aggregator(context)\r\n+# Create context optimized for local model\r\n+context = OpenAILLMContext(\r\n+    messages=[\r\n+        {\r\n+            \"role\": \"system\",\r\n+            \"content\": \"\"\"/no_think You are a friendly AI assistant. Respond naturally and keep your answers conversational. Avoid outputting special characters and emojis.\"\"\"\r\n+        }\r\n+    ],\r\n+    tools=tools\r\n+)\r\n \r\n+# Create context aggregators\r\n+context_aggregator = llm.create_context_aggregator(context)\r\n+\r\n     rtvi = RTVIProcessor(config=RTVIConfig(config=[]))\r\n \r\n     pipeline = Pipeline(\r\n         [\r\n"
+                },
+                {
+                    "date": 1755699349036,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -116,20 +116,20 @@\n         },\r\n     ]\r\n \r\n # Create context optimized for local model\r\n-context = OpenAILLMContext(\r\n-    messages=[\r\n-        {\r\n-            \"role\": \"system\",\r\n-            \"content\": \"\"\"/no_think You are a friendly AI assistant. Respond naturally and keep your answers conversational. Avoid outputting special characters and emojis.\"\"\"\r\n-        }\r\n-    ],\r\n-    tools=tools\r\n-)\r\n+    context = OpenAILLMContext(\r\n+        messages=[\r\n+            {\r\n+                \"role\": \"system\",\r\n+                \"content\": \"\"\"/no_think You are a friendly AI assistant. Respond naturally and keep your answers conversational. Avoid outputting special characters and emojis.\"\"\"\r\n+            }\r\n+        ],\r\n+        tools=tools\r\n+    )\r\n \r\n # Create context aggregators\r\n-context_aggregator = llm.create_context_aggregator(context)\r\n+    context_aggregator = llm.create_context_aggregator(context)\r\n \r\n     rtvi = RTVIProcessor(config=RTVIConfig(config=[]))\r\n \r\n     pipeline = Pipeline(\r\n"
+                },
+                {
+                    "date": 1755699355727,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -107,15 +107,15 @@\n         base_url=\"http://localhost:11434/v1\",  # Default Ollama endpoint\r\n         params=OLLamaLLMService.InputParams(temperature=0.7, max_tokens=1000),\r\n     )\r\n \r\n-    messages = [\r\n-        {\r\n-            \"role\": \"system\",\r\n-            # \"content\": \"You are a friendly AI assistant. Respond naturally and keep your answers conversational. NEVER ADD emojis!!! NEVER USE emojis!!! NEVER ADD smiley faces!!! NEVER USE smiley faces!!!\",\r\n-            \"content\": \"/no_think You are a friendly AI assistant. Respond naturally and keep your answers conversational. Avoid outputting special characters and emojis.\",\r\n-        },\r\n-    ]\r\n+    # messages = [\r\n+    #     {\r\n+    #         \"role\": \"system\",\r\n+    #         # \"content\": \"You are a friendly AI assistant. Respond naturally and keep your answers conversational. NEVER ADD emojis!!! NEVER USE emojis!!! NEVER ADD smiley faces!!! NEVER USE smiley faces!!!\",\r\n+    #         \"content\": \"/no_think You are a friendly AI assistant. Respond naturally and keep your answers conversational. Avoid outputting special characters and emojis.\",\r\n+    #     },\r\n+    # ]\r\n \r\n     # Create context optimized for local model\r\n     context = OpenAILLMContext(\r\n         messages=[\r\n"
+                },
+                {
+                    "date": 1755699367149,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -123,9 +123,9 @@\n                 \"role\": \"system\",\r\n                 \"content\": \"\"\"/no_think You are a friendly AI assistant. Respond naturally and keep your answers conversational. Avoid outputting special characters and emojis.\"\"\",\r\n             }\r\n         ],\r\n-        tools=tools,\r\n+        # tools=tools,\r\n     )\r\n \r\n     # Create context aggregators\r\n     context_aggregator = llm.create_context_aggregator(context)\r\n"
                 }
             ],
             "date": 1755621761763,
