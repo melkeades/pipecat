@@ -4262,6 +4262,9 @@ koala = [
 krisp = [
     { name = "pipecat-ai-krisp" },
 ]
+kyutai = [
+    { name = "websockets" },
+]
 langchain = [
     { name = "langchain" },
     { name = "langchain-community" },
@@ -4475,6 +4478,7 @@ requires-dist = [
     { name = "websockets", marker = "extra == 'gladia'", specifier = ">=13.1,<15.0" },
     { name = "websockets", marker = "extra == 'google'", specifier = ">=13.1,<15.0" },
     { name = "websockets", marker = "extra == 'heygen'", specifier = ">=13.1,<15.0" },
+    { name = "websockets", marker = "extra == 'kyutai'", specifier = ">=13.1,<15.0" },
     { name = "websockets", marker = "extra == 'lmnt'", specifier = ">=13.1,<15.0" },
     { name = "websockets", marker = "extra == 'neuphonic'", specifier = ">=13.1,<15.0" },
     { name = "websockets", marker = "extra == 'openai'", specifier = ">=13.1,<15.0" },
@@ -4483,7 +4487,7 @@ requires-dist = [
     { name = "websockets", marker = "extra == 'soniox'", specifier = ">=13.1,<15.0" },
     { name = "websockets", marker = "extra == 'websocket'", specifier = ">=13.1,<15.0" },
 ]
-provides-extras = ["anthropic", "assemblyai", "asyncai", "aws", "aws-nova-sonic", "azure", "cartesia", "cerebras", "deepseek", "daily", "deepgram", "elevenlabs", "fal", "fireworks", "fish", "gladia", "google", "grok", "groq", "gstreamer", "heygen", "inworld", "krisp", "koala", "langchain", "livekit", "lmnt", "local", "mcp", "mem0", "mistral", "mlx-whisper", "moondream", "nim", "neuphonic", "noisereduce", "openai", "openpipe", "openrouter", "perplexity", "playht", "qwen", "rime", "riva", "runner", "sambanova", "sentry", "local-smart-turn", "remote-smart-turn", "silero", "simli", "soniox", "soundfile", "speechmatics", "tavus", "together", "tracing", "ultravox", "webrtc", "websocket", "whisper"]
+provides-extras = ["anthropic", "assemblyai", "asyncai", "aws", "aws-nova-sonic", "azure", "cartesia", "cerebras", "deepseek", "daily", "deepgram", "elevenlabs", "fal", "fireworks", "fish", "gladia", "google", "grok", "groq", "gstreamer", "heygen", "inworld", "krisp", "koala", "langchain", "livekit", "lmnt", "local", "mcp", "mem0", "mistral", "mlx-whisper", "moondream", "nim", "neuphonic", "noisereduce", "openai", "openpipe", "openrouter", "perplexity", "playht", "kyutai", "qwen", "rime", "riva", "runner", "sambanova", "sentry", "local-smart-turn", "remote-smart-turn", "silero", "simli", "soniox", "soundfile", "speechmatics", "tavus", "together", "tracing", "ultravox", "webrtc", "websocket", "whisper"]
 
 [package.metadata.requires-dev]
 dev = [

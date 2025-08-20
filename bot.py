@@ -61,6 +61,7 @@ from pipecat.services.whisper.stt import WhisperSTTService, Model
 from pipecat.transcriptions.language import Language
 
 from pipecat.services.kokoro import KokoroTTSService
+from pipecat.services.kyutai.tts import KyutaiTTSService
 
 logger.info("✅ Pipeline components loaded")
 
@@ -88,9 +89,17 @@ async def run_bot(transport: BaseTransport, runner_args: RunnerArguments):
     #     api_key=os.getenv("CARTESIA_API_KEY"),
     #     voice_id="71a7ad14-091c-4e8e-a314-022ece01c121",  # British Reading Lady
     # )
-    tts = KokoroTTSService(
-        model_path="tts-models/kokoro-v1.0.onnx",
-        voices_path="tts-models/voices-v1.0.bin",
+    # On-device Kokoro TTS (non-streaming, but low latency)
+    # tts = KokoroTTSService(
+    #     model_path="tts-models/kokoro-v1.0.onnx",
+    #     voices_path="tts-models/voices-v1.0.bin",
+    # )
+    # Or: Kyutai Unmute streaming TTS via local bridge (speaks while LLM streams)
+    tts = KyutaiTTSService(
+        base_ws_url=os.getenv(
+            "KYUTAI_TTS_BRIDGE_WS", "ws://127.0.0.1:8070/v1/audio/speech/stream"
+        ),
+        # voice=os.getenv("KYUTAI_TTS_VOICE"),
     )
 
     # llm = OpenAILLMService(api_key=os.getenv("OPENAI_API_KEY"))
