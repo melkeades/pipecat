@@ -43,7 +43,7 @@ examples/**/*.key
 examples/**/*.mobileprovision
 examples/**/*.orig.*
 examples/**/web-build/
-tts-models/**
+tts-models/
 
 
 # macOS
