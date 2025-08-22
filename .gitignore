@@ -1,3 +1,5 @@
+**/*.onnx
+
 .vscode
 env/
 __pycache__/

@@ -1,4 +1,3 @@
-**/*.onnx
 # flyctl launch added from .gitignore
 **/.vscode
 **/env

@@ -1,0 +1,18 @@
+{
+    "sourceFile": ".gitignore",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 0,
+            "patches": [
+                {
+                    "date": 1755864264147,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                }
+            ],
+            "date": 1755864264147,
+            "name": "Commit-0",
+            "content": "**/*.onnx\n\n.vscode\nenv/\n__pycache__/\n*~\nvenv\n.venv\n/.idea\n#*#\n\n# Distribution / Packaging\n.Python\nbuild/\ndevelop-eggs/\ndist/\ndownloads/\neggs/\n.eggs/\nlib/\nlib64/\nparts/\nsdist/\nvar/\nwheels/\nshare/python-wheels/\n*.egg-info/\n.installed.cfg\n*.egg\nMANIFEST\n.DS_Store\n.env\nfly.toml\n\n# Examples\nexamples/**/node_modules/\nexamples/**/.expo/\nexamples/**/dist/\nexamples/**/npm-debug.*\nexamples/**/*.jks\nexamples/**/*.p8\nexamples/**/*.p12\nexamples/**/*.key\nexamples/**/*.mobileprovision\nexamples/**/*.orig.*\nexamples/**/web-build/\n\n# macOS\n.DS_Store\n\n# Documentation\ndocs/api/_build/\ndocs/api/api\n\n# uv\n.python-version"
+        }
+    ]
+}
