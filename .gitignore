@@ -1,4 +1,4 @@
-**/**.onnx
+tts-models/*
 
 .vscode
 env/
