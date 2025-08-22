@@ -1,4 +1,3 @@
-tts-models/*
 
 .vscode
 env/
@@ -44,6 +43,8 @@ examples/**/*.key
 examples/**/*.mobileprovision
 examples/**/*.orig.*
 examples/**/web-build/
+tts-models/**
+
 
 # macOS
 .DS_Store
