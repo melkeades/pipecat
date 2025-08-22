@@ -1,0 +1,18 @@
+{
+    "sourceFile": ".dockerignore",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 0,
+            "patches": [
+                {
+                    "date": 1755864214644,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                }
+            ],
+            "date": 1755864214644,
+            "name": "Commit-0",
+            "content": "**/*.onnx\n# flyctl launch added from .gitignore\n**/.vscode\n**/env\n**/__pycache__\n**/*~\n**/venv\n#*#\n\n# Distribution / packaging\n**/.Python\n**/build\n**/develop-eggs\n**/dist\n**/downloads\n**/eggs\n**/.eggs\n**/lib\n**/lib64\n**/parts\n**/sdist\n**/var\n**/wheels\n**/share/python-wheels\n**/*.egg-info\n**/.installed.cfg\n**/*.egg\n**/MANIFEST\n**/.DS_Store\n**/.env\nfly.toml\n"
+        }
+    ]
+}
